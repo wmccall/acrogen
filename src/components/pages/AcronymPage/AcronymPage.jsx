@@ -1,6 +1,8 @@
 import React, { useEffect, useContext, useState } from "react";
 import { withRouter, useParams } from "react-router-dom";
 
+import randomWords from "../../../util/randomWord";
+
 import LetterButton from "../../LetterButton";
 
 const letters = "abcdefghijklmnopqrstuvwxyz";
@@ -26,11 +28,44 @@ const generateLetterButtons = (acronym, lockedP, setLockedP) => {
   }
 };
 
+const updateWords = (acronym, locked, words, setWords) => {
+  const localWords = [];
+  console.log("updating: acronym");
+  console.log(acronym);
+  Array.from(acronym).map((letter, index) => {
+    console.log("what's locked");
+    console.log(locked);
+    if (!locked[index]) {
+      console.log("Adding word");
+      let word = randomWords({ exactly: 1, letter: letter })[0];
+      console.log(word);
+      localWords.push(word);
+    } else {
+      localWords.push(words[index]);
+    }
+  });
+  console.log("setting words");
+  setWords(localWords);
+};
+
+const generateWords = words => {
+  return words.map(word => {
+    return <div>{word}</div>;
+  });
+};
+
 const AcronymPage = () => {
   const { acronym, id } = useParams();
   const [sAcronym, setAcronym] = useState(acronym || "");
   const [sID, setID] = useState(id || "");
   const [locked, setLocked] = useState([]);
+  const [words, setWords] = useState([]);
+
+  useEffect(() => {
+    if (sAcronym.length === locked.length) {
+      updateWords(sAcronym, locked, words, setWords);
+    }
+  }, [sAcronym]);
 
   const handleBackspace = e => {
     if (e.key === "Backspace") {
@@ -39,6 +74,7 @@ const AcronymPage = () => {
         setAcronym(oldAcronym =>
           oldAcronym.substring(0, oldAcronym.length - 1)
         );
+        setLocked(oldLocked => oldLocked.slice(0, oldLocked.length - 1));
       }
     }
   };
@@ -46,8 +82,18 @@ const AcronymPage = () => {
     e.persist();
     if (letters.indexOf(e.key) > -1) {
       console.log(e.key);
-      setAcronym(oldAcronym => `${oldAcronym}${e.key}`);
+      let newAcro = "";
+      setAcronym(oldAcronym => {
+        newAcro = `${oldAcronym}${e.key}`;
+        return newAcro;
+      });
+      let newLocked = [];
+      setLocked(oldLocked => {
+        newLocked = [...oldLocked, false];
+        return newLocked;
+      });
     }
+    console.log("done handling keypress");
   };
 
   return (
@@ -57,7 +103,10 @@ const AcronymPage = () => {
       onKeyPress={e => handleKeypress(e)}
       className="AcronymPage"
     >
-      {generateLetterButtons(sAcronym, locked, setLocked)}
+      <div className="letters">
+        {generateLetterButtons(sAcronym, locked, setLocked)}
+      </div>
+      <div className="words">{generateWords(words)}</div>
     </div>
   );
 };
