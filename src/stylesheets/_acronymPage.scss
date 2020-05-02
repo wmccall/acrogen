@@ -16,5 +16,49 @@
   .words {
     color: white;
     font-size: 5vh;
+    padding: 5vh;
+  }
+
+  .letters {
+    .cursor-wrapper {
+      height: 12vh;
+      .cursor {
+        color: white;
+        font-size: 5vh;
+        line-height: 5vh;
+        animation: blinkingText 1.2s infinite;
+      }
+    }
+  }
+
+  .generateButton {
+    color: #282c34;
+    font-size: 5vh;
+    outline: none;
+    border: none;
+    background-color: #ba5a31;
+    padding: 1vh 3vh;
+    border-radius: 5vh;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+@keyframes blinkingText {
+  0% {
+    color: white;
+  }
+  49% {
+    color: white;
+  }
+  60% {
+    color: transparent;
+  }
+  99% {
+    color: transparent;
+  }
+  100% {
+    color: white;
   }
 }

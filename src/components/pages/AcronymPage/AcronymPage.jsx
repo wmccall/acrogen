@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { withRouter, useParams } from "react-router-dom";
 
 import randomWords from "../../../util/randomWord";
@@ -49,9 +49,7 @@ const updateWords = (acronym, locked, words, setWords) => {
 };
 
 const generateWords = words => {
-  return words.map(word => {
-    return <div>{word}</div>;
-  });
+  return words.map(word => `${word} `);
 };
 
 const AcronymPage = () => {
@@ -60,12 +58,13 @@ const AcronymPage = () => {
   const [sID, setID] = useState(id || "");
   const [locked, setLocked] = useState([]);
   const [words, setWords] = useState([]);
+  const background = useRef(null);
 
-  useEffect(() => {
-    if (sAcronym.length === locked.length) {
-      updateWords(sAcronym, locked, words, setWords);
-    }
-  }, [sAcronym]);
+  // useEffect(() => {
+  //   if (sAcronym.length === locked.length) {
+  //     updateWords(sAcronym, locked, words, setWords);
+  //   }
+  // }, [sAcronym]);
 
   const handleBackspace = e => {
     if (e.key === "Backspace") {
@@ -77,6 +76,7 @@ const AcronymPage = () => {
         setLocked(oldLocked => oldLocked.slice(0, oldLocked.length - 1));
       }
     }
+    background.current.focus();
   };
   const handleKeypress = e => {
     e.persist();
@@ -92,7 +92,10 @@ const AcronymPage = () => {
         newLocked = [...oldLocked, false];
         return newLocked;
       });
+    } else if (e.key === " " || e.key === "Enter") {
+      updateWords(sAcronym, locked, words, setWords);
     }
+    background.current.focus();
     console.log("done handling keypress");
   };
 
@@ -102,10 +105,21 @@ const AcronymPage = () => {
       onKeyDown={e => handleBackspace(e)}
       onKeyPress={e => handleKeypress(e)}
       className="AcronymPage"
+      ref={background}
     >
       <div className="letters">
         {generateLetterButtons(sAcronym, locked, setLocked)}
+        <div className="cursor-wrapper">
+          <div className="cursor">|</div>
+        </div>
       </div>
+      <button
+        type="button"
+        className="generateButton"
+        onClick={() => updateWords(sAcronym, locked, words, setWords)}
+      >
+        AcroGen!
+      </button>
       <div className="words">{generateWords(words)}</div>
     </div>
   );
