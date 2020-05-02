@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { withRouter, useParams } from "react-router-dom";
+import { compose } from "recompose";
 
 import randomWords from "../../../util/randomWord";
 
@@ -52,19 +53,34 @@ const generateWords = words => {
   return words.map(word => `${word} `);
 };
 
-const AcronymPage = () => {
+const AcronymPage = props => {
   const { acronym, id } = useParams();
-  const [sAcronym, setAcronym] = useState(acronym || "");
-  const [sID, setID] = useState(id || "");
-  const [locked, setLocked] = useState([]);
-  const [words, setWords] = useState([]);
+
+  const {
+    sAcronym,
+    setAcronym,
+    sID,
+    setID,
+    locked,
+    setLocked,
+    words,
+    setWords,
+    history
+  } = props;
+
   const background = useRef(null);
 
-  // useEffect(() => {
-  //   if (sAcronym.length === locked.length) {
-  //     updateWords(sAcronym, locked, words, setWords);
-  //   }
-  // }, [sAcronym]);
+  useEffect(() => {
+    if (sAcronym.length === locked.length) {
+      setAcronym(sAcronym);
+      setLocked(locked);
+      history.push(`/${sAcronym}`);
+    }
+  }, [sAcronym, locked]);
+
+  useEffect(() => {
+    background.current.focus();
+  }, []);
 
   const handleBackspace = e => {
     if (e.key === "Backspace") {
@@ -125,4 +141,4 @@ const AcronymPage = () => {
   );
 };
 
-export default AcronymPage;
+export default compose(withRouter)(AcronymPage);
