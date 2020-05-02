@@ -1,0 +1,19 @@
+.LetterButton {
+  button {
+    color: white;
+    font-size: 5vh;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  div {
+    color: white;
+    font-size: 5vh;
+    &.unlocked {
+      visibility: hidden;
+    }
+  }
+}
