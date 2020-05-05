@@ -1,3 +1,22 @@
+$hover-drop-shadow: 0.7vh;
+$hover-margin-bottom: 0.8vh;
+$hover-margin-top: 0.2vh;
+
+$click-drop-shadow: 0.2vh;
+$click-margin-bottom: 0.3vh;
+$click-margin-top: 0.7vh;
+
+$border-length: 0.3vh;
+$drop-shadow: 0.9vh;
+
+$dark-orange: #ba5a31;
+$white: #ffffff;
+$light-gray: #c5c6d0;
+$gray: #a5a0b1;
+$dark-gray: #62606d;
+$darker-gray: #282c34;
+$darkest-gray: #1b1b1f;
+
 .AcronymPage {
   height: 100vh;
   width: 100vw;
@@ -18,7 +37,7 @@
     font-size: 5vh;
     padding: 5vh;
     .locked {
-      color: #ba5a31;
+      color: $dark-orange;
     }
   }
 
@@ -35,15 +54,50 @@
   }
 
   .generateButton {
-    color: #282c34;
+    color: white;
     font-size: 5vh;
     outline: none;
     border: none;
-    background-color: #ba5a31;
+    background-color: $darker-gray;
     padding: 1vh 3vh;
     border-radius: 5vh;
+    margin-bottom: 1vh;
+    pointer-events: all !important;
+    border-radius: 100px;
+    border: solid $border-length white;
+    min-width: 16vw;
+    padding: 1.4vh 1.7vh 1.4vh 1.7vh;
+    transition: border 0.15s ease-in-out, color 0.15s ease-in-out,
+      margin-top 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+      margin-bottom 0.15s ease-in-out, margin-top 0.15s ease-in-out,
+      background-color 0.15s ease-in-out;
+    box-shadow: 0px $drop-shadow 0px $dark-gray;
     &:hover {
       cursor: pointer;
+      box-shadow: 0px $hover-drop-shadow 0px $dark-orange;
+      margin-bottom: $hover-margin-bottom;
+      margin-top: $hover-margin-top;
+      &:active {
+        transition: border 0s ease-in-out, color 0s ease-in-out,
+          margin-top 0s ease-in-out, box-shadow 0s ease-in-out,
+          margin-bottom 0s ease-in-out, margin-top 0s ease-in-out,
+          background-color 0s ease-in-out;
+        border: solid $border-length $dark-orange;
+        box-shadow: 0px $click-drop-shadow 0px $dark-orange;
+        margin-bottom: $click-margin-bottom;
+        margin-top: $click-margin-top;
+      }
+    }
+
+    &.generate {
+      transition: border 0s ease-in-out, color 0s ease-in-out,
+        margin-top 0s ease-in-out, box-shadow 0s ease-in-out,
+        margin-bottom 0s ease-in-out, margin-top 0s ease-in-out,
+        background-color 0s ease-in-out;
+      border: solid $border-length $dark-orange;
+      box-shadow: 0px $click-drop-shadow 0px $dark-orange;
+      margin-bottom: $click-margin-bottom;
+      margin-top: $click-margin-top;
     }
   }
 }

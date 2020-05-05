@@ -77,6 +77,8 @@ const AcronymPage = props => {
 
   const background = useRef(null);
 
+  const [buttonActive, setButtonActive] = useState(false);
+
   useEffect(() => {
     if (sAcronym.length === locked.length) {
       setAcronym(sAcronym);
@@ -89,7 +91,7 @@ const AcronymPage = props => {
     background.current.focus();
   }, []);
 
-  const handleBackspace = e => {
+  const handleKeyDown = e => {
     if (e.key === "Backspace") {
       console.log("backspace");
       if (sAcronym.length > 0) {
@@ -98,6 +100,14 @@ const AcronymPage = props => {
         );
         setLocked(oldLocked => oldLocked.slice(0, oldLocked.length - 1));
       }
+    } else if (e.key === " " || e.key === "Enter") {
+      setButtonActive(true);
+    }
+    background.current.focus();
+  };
+  const handleKeyUp = e => {
+    if (e.key === " " || e.key === "Enter") {
+      setButtonActive(false);
     }
     background.current.focus();
   };
@@ -125,7 +135,8 @@ const AcronymPage = props => {
   return (
     <div
       tabIndex="0"
-      onKeyDown={e => handleBackspace(e)}
+      onKeyDown={e => handleKeyDown(e)}
+      onKeyUp={e => handleKeyUp(e)}
       onKeyPress={e => handleKeypress(e)}
       className="AcronymPage"
       ref={background}
@@ -138,7 +149,7 @@ const AcronymPage = props => {
       </div>
       <button
         type="button"
-        className="generateButton"
+        className={`generateButton ${buttonActive ? "generate" : ""}`}
         onClick={() => updateWords(sAcronym, locked, words, setWords)}
       >
         AcroGen!
