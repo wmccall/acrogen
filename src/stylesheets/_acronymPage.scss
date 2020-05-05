@@ -54,24 +54,24 @@ $darkest-gray: #1b1b1f;
   }
 
   .generateButton {
-    color: white;
+    color: $darker-gray;
     font-size: 5vh;
     outline: none;
     border: none;
-    background-color: $darker-gray;
+    background-color: $dark-orange;
     padding: 1vh 3vh;
     border-radius: 5vh;
     margin-bottom: 1vh;
     pointer-events: all !important;
     border-radius: 100px;
-    border: solid $border-length white;
+    border: solid $border-length $darker-gray;
     min-width: 16vw;
     padding: 1.4vh 1.7vh 1.4vh 1.7vh;
     transition: border 0.15s ease-in-out, color 0.15s ease-in-out,
       margin-top 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
       margin-bottom 0.15s ease-in-out, margin-top 0.15s ease-in-out,
       background-color 0.15s ease-in-out;
-    box-shadow: 0px $drop-shadow 0px $dark-gray;
+    box-shadow: 0px $drop-shadow 0px $dark-orange;
     &:hover {
       cursor: pointer;
       box-shadow: 0px $hover-drop-shadow 0px $dark-orange;
@@ -82,7 +82,6 @@ $darkest-gray: #1b1b1f;
           margin-top 0s ease-in-out, box-shadow 0s ease-in-out,
           margin-bottom 0s ease-in-out, margin-top 0s ease-in-out,
           background-color 0s ease-in-out;
-        border: solid $border-length $dark-orange;
         box-shadow: 0px $click-drop-shadow 0px $dark-orange;
         margin-bottom: $click-margin-bottom;
         margin-top: $click-margin-top;
@@ -94,7 +93,6 @@ $darkest-gray: #1b1b1f;
         margin-top 0s ease-in-out, box-shadow 0s ease-in-out,
         margin-bottom 0s ease-in-out, margin-top 0s ease-in-out,
         background-color 0s ease-in-out;
-      border: solid $border-length $dark-orange;
       box-shadow: 0px $click-drop-shadow 0px $dark-orange;
       margin-bottom: $click-margin-bottom;
       margin-top: $click-margin-top;
