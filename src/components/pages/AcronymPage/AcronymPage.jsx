@@ -49,8 +49,15 @@ const updateWords = (acronym, locked, words, setWords) => {
   setWords(localWords);
 };
 
-const generateWords = words => {
-  return words.map(word => `${word} `);
+const generateWords = (words, locked) => {
+  return words.map((word, index) => (
+    <>
+      <div className={`word ${locked[index] ? "locked" : "unlocked"}`}>
+        {word}
+      </div>
+      <div className="word">&nbsp;</div>
+    </>
+  ));
 };
 
 const AcronymPage = props => {
@@ -136,7 +143,7 @@ const AcronymPage = props => {
       >
         AcroGen!
       </button>
-      <div className="words">{generateWords(words)}</div>
+      <div className="words">{generateWords(words, locked)}</div>
     </div>
   );
 };
