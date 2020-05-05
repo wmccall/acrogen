@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import AcronymPage from "./components/pages/AcronymPage";
+import AcronymPage from './components/pages/AcronymPage';
 
 function App() {
-  const [sAcronym, setAcronym] = useState("");
-  const [sID, setID] = useState("");
+  const [sAcronym, setAcronym] = useState('');
+  const [sID, setID] = useState('');
   const [locked, setLocked] = useState([]);
   const [words, setWords] = useState([]);
   const props = {
@@ -16,20 +16,20 @@ function App() {
     locked,
     setLocked,
     words,
-    setWords
+    setWords,
   };
   return (
     <Router>
       <div className="App">
-        <Route exact path={`/`} render={() => <AcronymPage {...props} />} />
+        <Route exact path="/" render={() => <AcronymPage {...props} />} />
         <Route
           exact
-          path={`/:acronym/`}
+          path="/:acronym/"
           render={() => <AcronymPage {...props} />}
         />
         <Route
           exact
-          path={`/:acronym/:id/`}
+          path="/:acronym/:id/"
           render={() => <AcronymPage {...props} />}
         />
       </div>

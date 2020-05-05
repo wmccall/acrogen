@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { withRouter, useParams } from "react-router-dom";
-import { compose } from "recompose";
+import React, { useEffect, useRef, useState } from 'react';
+import { withRouter, useParams } from 'react-router-dom';
+import { compose } from 'recompose';
 
-import randomWords from "../../../util/randomWord";
+import randomWords from '../../../util/randomWord';
 
-import LetterButton from "../../LetterButton";
+import LetterButton from '../../LetterButton';
 
-const letters = "abcdefghijklmnopqrstuvwxyz";
+const letters = 'abcdefghijklmnopqrstuvwxyz';
 
 const generateLetterButtons = (acronym, lockedP, setLockedP) => {
   if (acronym) {
@@ -23,35 +23,38 @@ const generateLetterButtons = (acronym, lockedP, setLockedP) => {
       return LetterButton({
         letter,
         locked: lockedP[index],
-        setLocked: isLocked => setLocked(isLocked)
+        setLocked: isLocked => setLocked(isLocked),
       });
     });
   }
 };
 
 const updateWords = (acronym, locked, words, setWords) => {
-  console.log("updating: acronym");
+  console.log('updating: acronym');
   console.log(acronym);
-  const localWords = Array.from(acronym).map((letter, index) => {
-    console.log("what's locked");
-    console.log(locked);
-    if (!locked[index]) {
-      console.log("Adding word");
-      let word = randomWords({ exactly: 1, letter: letter })[0];
-      console.log(word);
-      return word;
-    } else {
+  if (acronym) {
+    const localWords = Array.from(acronym).map((letter, index) => {
+      console.log("what's locked");
+      console.log(locked);
+      if (!locked[index]) {
+        console.log('Adding word');
+        let word = randomWords({ exactly: 1, letter })[0];
+        console.log(word);
+        return word;
+      }
       return words[index];
-    }
-  });
-  console.log("setting words");
-  setWords(localWords);
+    });
+    console.log('setting words');
+    setWords(localWords);
+  } else {
+    setWords([]);
+  }
 };
 
 const generateWords = (words, locked) => {
   return words.map((word, index) => (
     <>
-      <div className={`word ${locked[index] ? "locked" : "unlocked"}`}>
+      <div className={`word ${locked[index] ? 'locked' : 'unlocked'}`}>
         {word}
       </div>
       <div className="word">&nbsp;</div>
@@ -71,7 +74,7 @@ const AcronymPage = props => {
     setLocked,
     words,
     setWords,
-    history
+    history,
   } = props;
 
   const background = useRef(null);
@@ -79,39 +82,29 @@ const AcronymPage = props => {
   const [buttonActive, setButtonActive] = useState(false);
 
   useEffect(() => {
-    if (sAcronym.length === locked.length) {
-      if (sAcronym.length === 0 && acronym) {
-        setAcronym(acronym);
-        setLocked(Array.from(acronym).map(() => false));
-      } else {
-        setAcronym(sAcronym);
-        setLocked(locked);
-        history.push(`/${sAcronym}`);
-      }
-    }
+    setLocked(locked);
     // eslint-disable-next-line
-  }, [sAcronym, locked]);
+  }, [locked]);
 
   useEffect(() => {
     background.current.focus();
   }, []);
 
   const handleKeyDown = e => {
-    if (e.key === "Backspace") {
-      console.log("backspace");
-      if (sAcronym.length > 0) {
-        setAcronym(oldAcronym =>
-          oldAcronym.substring(0, oldAcronym.length - 1)
-        );
+    if (e.key === 'Backspace') {
+      console.log('backspace');
+      if (acronym && acronym.length > 0) {
+        console.log('here');
+        history.push(`/${acronym.substring(0, acronym.length - 1) || ''}`);
         setLocked(oldLocked => oldLocked.slice(0, oldLocked.length - 1));
       }
-    } else if (e.key === " " || e.key === "Enter") {
+    } else if (e.key === ' ' || e.key === 'Enter') {
       setButtonActive(true);
     }
     background.current.focus();
   };
   const handleKeyUp = e => {
-    if (e.key === " " || e.key === "Enter") {
+    if (e.key === ' ' || e.key === 'Enter') {
       setButtonActive(false);
     }
     background.current.focus();
@@ -120,21 +113,21 @@ const AcronymPage = props => {
     e.persist();
     if (letters.indexOf(e.key) > -1) {
       console.log(e.key);
-      let newAcro = "";
-      setAcronym(oldAcronym => {
-        newAcro = `${oldAcronym}${e.key}`;
-        return newAcro;
-      });
+      if (acronym) {
+        history.push(`/${acronym}${e.key}`);
+      } else {
+        history.push(`/${e.key}`);
+      }
       let newLocked = [];
       setLocked(oldLocked => {
         newLocked = [...oldLocked, false];
         return newLocked;
       });
-    } else if (e.key === " " || e.key === "Enter") {
-      updateWords(sAcronym, locked, words, setWords);
+    } else if (e.key === ' ' || e.key === 'Enter') {
+      updateWords(acronym, locked, words, setWords);
     }
     background.current.focus();
-    console.log("done handling keypress");
+    console.log('done handling keypress');
   };
 
   return (
@@ -147,15 +140,15 @@ const AcronymPage = props => {
       ref={background}
     >
       <div className="letters">
-        {generateLetterButtons(sAcronym, locked, setLocked)}
+        {generateLetterButtons(acronym, locked, setLocked)}
         <div className="cursor-wrapper">
           <div className="cursor">|</div>
         </div>
       </div>
       <button
         type="button"
-        className={`generateButton ${buttonActive ? "generate" : ""}`}
-        onClick={() => updateWords(sAcronym, locked, words, setWords)}
+        className={`generateButton ${buttonActive ? 'generate' : ''}`}
+        onClick={() => updateWords(acronym, locked, words, setWords)}
       >
         AcroGen!
       </button>
