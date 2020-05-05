@@ -1,4 +1,3 @@
 #!/bin/bash
-yarn run build
-gcloud config set project acrogen-prod
+gcloud config set project acrogen-prod-276305
 gcloud app deploy
