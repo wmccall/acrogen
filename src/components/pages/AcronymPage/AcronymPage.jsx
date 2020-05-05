@@ -30,19 +30,18 @@ const generateLetterButtons = (acronym, lockedP, setLockedP) => {
 };
 
 const updateWords = (acronym, locked, words, setWords) => {
-  const localWords = [];
   console.log("updating: acronym");
   console.log(acronym);
-  Array.from(acronym).map((letter, index) => {
+  const localWords = Array.from(acronym).map((letter, index) => {
     console.log("what's locked");
     console.log(locked);
     if (!locked[index]) {
       console.log("Adding word");
       let word = randomWords({ exactly: 1, letter: letter })[0];
       console.log(word);
-      localWords.push(word);
+      return word;
     } else {
-      localWords.push(words[index]);
+      return words[index];
     }
   });
   console.log("setting words");
@@ -81,10 +80,16 @@ const AcronymPage = props => {
 
   useEffect(() => {
     if (sAcronym.length === locked.length) {
-      setAcronym(sAcronym);
-      setLocked(locked);
-      history.push(`/${sAcronym}`);
+      if (sAcronym.length === 0 && acronym) {
+        setAcronym(acronym);
+        setLocked(Array.from(acronym).map(() => false));
+      } else {
+        setAcronym(sAcronym);
+        setLocked(locked);
+        history.push(`/${sAcronym}`);
+      }
     }
+    // eslint-disable-next-line
   }, [sAcronym, locked]);
 
   useEffect(() => {
