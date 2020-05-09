@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { withRouter, useParams } from 'react-router-dom';
 import { compose } from 'recompose';
 
+import { isMobile } from 'react-device-detect';
+
 import randomWords from '../../../util/randomWord';
 
 import LetterButton from '../../LetterButton';
@@ -78,8 +80,17 @@ const AcronymPage = props => {
   } = props;
 
   const background = useRef(null);
+  const mobileText = useRef(null);
 
   const [buttonActive, setButtonActive] = useState(false);
+
+  const focusProperTextField = () => {
+    if (isMobile) {
+      mobileText.current.focus();
+    } else {
+      background.current.focus();
+    }
+  };
 
   useEffect(() => {
     setLocked(locked);
@@ -87,47 +98,74 @@ const AcronymPage = props => {
   }, [locked]);
 
   useEffect(() => {
-    background.current.focus();
+    focusProperTextField();
   }, []);
 
   const handleKeyDown = e => {
-    if (e.key === 'Backspace') {
-      console.log('backspace');
-      if (acronym && acronym.length > 0) {
-        console.log('here');
-        history.push(`/${acronym.substring(0, acronym.length - 1) || ''}`);
-        setLocked(oldLocked => oldLocked.slice(0, oldLocked.length - 1));
+    if (e.key) {
+      if (e.key === 'Backspace') {
+        console.log('backspace');
+        if (acronym && acronym.length > 0) {
+          console.log('here');
+          history.push(`/${acronym.substring(0, acronym.length - 1) || ''}`);
+          setLocked(oldLocked => oldLocked.slice(0, oldLocked.length - 1));
+        }
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        setButtonActive(true);
       }
-    } else if (e.key === ' ' || e.key === 'Enter') {
-      setButtonActive(true);
     }
-    background.current.focus();
+    focusProperTextField();
   };
   const handleKeyUp = e => {
-    if (e.key === ' ' || e.key === 'Enter') {
-      setButtonActive(false);
+    if (e.key) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        setButtonActive(false);
+      }
     }
-    background.current.focus();
+    focusProperTextField();
   };
   const handleKeypress = e => {
-    e.persist();
-    if (letters.indexOf(e.key) > -1) {
-      console.log(e.key);
-      if (acronym) {
-        history.push(`/${acronym}${e.key}`);
-      } else {
-        history.push(`/${e.key}`);
+    if (e.key) {
+      e.persist();
+      if (letters.indexOf(e.key) > -1) {
+        console.log(e.key);
+        if (acronym) {
+          history.push(`/${acronym}${e.key}`);
+        } else {
+          history.push(`/${e.key}`);
+        }
+        let newLocked = [];
+        setLocked(oldLocked => {
+          newLocked = [...oldLocked, false];
+          return newLocked;
+        });
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        updateWords(acronym, locked, words, setWords);
       }
-      let newLocked = [];
-      setLocked(oldLocked => {
-        newLocked = [...oldLocked, false];
-        return newLocked;
-      });
-    } else if (e.key === ' ' || e.key === 'Enter') {
-      updateWords(acronym, locked, words, setWords);
     }
-    background.current.focus();
+    focusProperTextField();
     console.log('done handling keypress');
+  };
+
+  const handleClick = () => {
+    focusProperTextField();
+  };
+
+  const handleMobileInputChange = e => {
+    const rawInput = e.target.value.toLowerCase();
+    if (rawInput.slice(rawInput.length - 1) === ' ') {
+      updateWords(acronym, locked, words, setWords);
+    } else {
+      const fixedInput = Array.from(rawInput)
+        .map(letter => {
+          if (letters.indexOf(letter) < 0) {
+            return '';
+          }
+          return letter;
+        })
+        .join('');
+      history.push(`/${fixedInput}`);
+    }
   };
 
   return (
@@ -136,6 +174,7 @@ const AcronymPage = props => {
       onKeyDown={e => handleKeyDown(e)}
       onKeyUp={e => handleKeyUp(e)}
       onKeyPress={e => handleKeypress(e)}
+      onClick={() => handleClick()}
       className="AcronymPage"
       ref={background}
     >
@@ -153,6 +192,13 @@ const AcronymPage = props => {
         AcroGen!
       </button>
       <div className="words">{generateWords(words, locked)}</div>
+      <input
+        className="mobileInput"
+        type="text"
+        ref={mobileText}
+        value={acronym || ''}
+        onChange={e => handleMobileInputChange(e)}
+      />
     </div>
   );
 };
