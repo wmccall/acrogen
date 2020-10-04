@@ -1,7 +1,8 @@
 import hash from 'object-hash';
+import constants from './constants';
 
-const hLen = 40;
-const shLen = 6;
+const hLen = constants.hashLen;
+const shLen = constants.shortHashLen;
 const sLen = hLen - shLen;
 
 const a = {

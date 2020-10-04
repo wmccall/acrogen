@@ -5,10 +5,8 @@ import { compose } from 'recompose';
 import { isMobile } from 'react-device-detect';
 
 import randomWords from '../../../util/randomWord';
-
 import LetterButton from '../../LetterButton';
-
-const letters = 'abcdefghijklmnopqrstuvwxyz';
+import constant from '../../../util/constants';
 
 const generateLetterButtons = (acronym, lockedP, setLockedP) => {
   if (acronym) {
@@ -72,17 +70,7 @@ const generateWords = (words, locked) => {
 const AcronymPage = props => {
   const { acronym, nymid } = useParams();
 
-  const {
-    sAcronym,
-    setAcronym,
-    sID,
-    setID,
-    locked,
-    setLocked,
-    words,
-    setWords,
-    history,
-  } = props;
+  const { locked, setLocked, words, setWords, history } = props;
 
   const background = useRef(null);
   const mobileText = useRef(null);
@@ -99,7 +87,7 @@ const AcronymPage = props => {
 
   const convertIdToWords = id => {
     if (id) {
-      if (id.length % 6 == 0) {
+      if (id.length % constant.shortHashLen === 0) {
         let idArr = id.match(/.{1,6}/g);
         let getWords = randomWords({ ids: idArr });
         if (idArr.length !== getWords.length) {
@@ -153,7 +141,7 @@ const AcronymPage = props => {
   const handleKeypress = e => {
     if (e.key) {
       e.persist();
-      if (letters.indexOf(e.key) > -1) {
+      if (constant.letters.indexOf(e.key) > -1) {
         console.log(e.key);
         if (acronym) {
           history.push(`/${acronym}${e.key}`);
@@ -184,7 +172,7 @@ const AcronymPage = props => {
     } else {
       const fixedInput = Array.from(rawInput)
         .map(letter => {
-          if (letters.indexOf(letter) < 0) {
+          if (constant.letters.indexOf(letter) < 0) {
             return '';
           }
           return letter;
