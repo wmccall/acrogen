@@ -29,7 +29,7 @@ function App() {
         />
         <Route
           exact
-          path="/:acronym/:id/"
+          path="/:acronym/:nymid/"
           render={() => <AcronymPage {...props} />}
         />
       </div>

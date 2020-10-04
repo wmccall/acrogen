@@ -31,23 +31,28 @@ const generateLetterButtons = (acronym, lockedP, setLockedP) => {
   }
 };
 
-const updateWords = (acronym, locked, words, setWords) => {
+const updateWords = (acronym, locked, words, setWords, history) => {
   console.log('updating: acronym');
   console.log(acronym);
   if (acronym) {
+    let id = '';
     const localWords = Array.from(acronym).map((letter, index) => {
       console.log("what's locked");
       console.log(locked);
       if (!locked[index]) {
         console.log('Adding word');
-        let word = randomWords({ exactly: 1, letter })[0];
-        console.log(word);
-        return word;
+        let wordArr = randomWords({ exactly: 1, letter })[0].split(',');
+        id += wordArr[0];
+        console.log(wordArr[1]);
+        return wordArr[1];
       }
       return words[index];
     });
     console.log('setting words');
     setWords(localWords);
+    if (acronym && acronym.length > 0) {
+      history.push(`/${acronym}/${id}`);
+    }
   } else {
     setWords([]);
   }
@@ -65,7 +70,7 @@ const generateWords = (words, locked) => {
 };
 
 const AcronymPage = props => {
-  const { acronym, id } = useParams();
+  const { acronym, nymid } = useParams();
 
   const {
     sAcronym,
@@ -92,13 +97,34 @@ const AcronymPage = props => {
     }
   };
 
+  const convertIdToWords = id => {
+    if (id) {
+      if (id.length % 6 == 0) {
+        let idArr = id.match(/.{1,6}/g);
+        let getWords = randomWords({ ids: idArr });
+        if (idArr.length !== getWords.length) {
+          history.push(`/`);
+          return;
+        }
+        setWords(getWords.map(word => word[1]));
+      } else {
+        if (acronym && acronym.length > 0) {
+          history.push(`/${acronym}`);
+          return;
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     setLocked(locked);
     // eslint-disable-next-line
   }, [locked]);
 
   useEffect(() => {
+    console.log(nymid);
     focusProperTextField();
+    convertIdToWords(nymid);
   }, []);
 
   const handleKeyDown = e => {
@@ -140,7 +166,7 @@ const AcronymPage = props => {
           return newLocked;
         });
       } else if (e.key === ' ' || e.key === 'Enter') {
-        updateWords(acronym, locked, words, setWords);
+        updateWords(acronym, locked, words, setWords, history);
       }
     }
     focusProperTextField();
@@ -154,7 +180,7 @@ const AcronymPage = props => {
   const handleMobileInputChange = e => {
     const rawInput = e.target.value.toLowerCase();
     if (rawInput.slice(rawInput.length - 1) === ' ') {
-      updateWords(acronym, locked, words, setWords);
+      updateWords(acronym, locked, words, setWords, history);
     } else {
       const fixedInput = Array.from(rawInput)
         .map(letter => {
@@ -187,11 +213,13 @@ const AcronymPage = props => {
       <button
         type="button"
         className={`generateButton ${buttonActive ? 'generate' : ''}`}
-        onClick={() => updateWords(acronym, locked, words, setWords)}
+        onClick={() => updateWords(acronym, locked, words, setWords, history)}
       >
         AcroGen!
       </button>
-      <div className="words">{generateWords(words, locked)}</div>
+      <div className="words">
+        {generateWords(words, locked, acronym, history)}
+      </div>
       <input
         className="mobileInput"
         type="text"
