@@ -8,7 +8,7 @@ import randomWords from '../../../util/randomWord';
 import LetterButton from '../../LetterButton';
 import constant from '../../../util/constants';
 
-const generateLetterButtons = (acronym, lockedP, setLockedP) => {
+const generateLetterButtons = (acronym, words, lockedP, setLockedP) => {
   if (acronym) {
     console.log(acronym);
     return Array.from(acronym).map((letter, index) => {
@@ -20,33 +20,39 @@ const generateLetterButtons = (acronym, lockedP, setLockedP) => {
         });
       };
 
+      const word = words[index];
+      let lockable = false;
+      if(word){
+        lockable = acronym[index] === word[0];
+      }
+
       return LetterButton({
         letter,
         locked: lockedP[index],
         setLocked: isLocked => setLocked(isLocked),
+        lockable: lockable
       });
     });
   }
 };
 
 const updateWords = (acronym, locked, words, setWords, history) => {
-  console.log('updating: acronym');
-  console.log(acronym);
+  console.log(`updating: acronym - ${acronym}`);
+  console.log(`words: ${words}`)
+  console.log(`what's locked: ${locked}`);
   if (acronym) {
     let id = '';
     const localWords = Array.from(acronym).map((letter, index) => {
-      console.log("what's locked");
-      console.log(locked);
       if (!locked[index]) {
-        console.log('Adding word');
         let wordArr = randomWords({ exactly: 1, letter })[0].split(',');
         id += wordArr[0];
-        console.log(wordArr[1]);
+        console.log(`Adding word: ${wordArr[1]}`);
         return wordArr[1];
       }
+      id += randomWords({word: words[index]});
       return words[index];
     });
-    console.log('setting words');
+    console.log(`setting words: ${localWords}`);
     setWords(localWords);
     if (acronym && acronym.length > 0) {
       history.push(`/${acronym}/${id}`);
@@ -193,7 +199,7 @@ const AcronymPage = props => {
       ref={background}
     >
       <div className="letters">
-        {generateLetterButtons(acronym, locked, setLocked)}
+        {generateLetterButtons(acronym, words, locked, setLocked)}
         <div className="cursor-wrapper">
           <div className="cursor">|</div>
         </div>

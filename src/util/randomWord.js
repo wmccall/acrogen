@@ -2179,6 +2179,12 @@ function words(options) {
     options = { exactly: options };
   }
 
+  //returns hash of the word
+  if (options.word){
+    let index = Object.values(allWords).indexOf(options.word);
+    return Object.keys(allWords)[index];
+  }
+
   if (options.ids) {
     let words = options.ids.map(id => {
       console.log(id);
