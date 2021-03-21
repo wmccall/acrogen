@@ -35,13 +35,42 @@ $darkest-gray: #1b1b1f;
   .words {
     color: white;
     font-size: 5vh;
-    padding: 5vh;
+    margin: 5vh;
+    cursor: pointer;
+    border-bottom: solid 3px transparent;
+    transition: border-bottom 0.15s ease-in-out;
     .locked {
       color: $dark-orange;
+    }
+    &:hover {
+      border-bottom: solid 3px #ba5a31;
+    }
+  }
+
+  .word {
+    background-color: #282c34;
+    z-index: 2;
+  }
+
+  .copied {
+    font-size: 20px;
+    margin-bottom: -9vh;
+    margin-top: 9vh;
+    color: #282c34;
+    transition: margin-bottom 0.25s ease-in-out, margin-top 0.25s ease-in-out,
+      color 0.15s ease-in-out;
+    &.active {
+      margin-bottom: -4vh;
+      margin-top: 4vh;
+      visibility: visible;
+      color: #ba5a31;
+      transition: margin-bottom 0.15s ease-in-out, margin-top 0.15s ease-in-out,
+        color 0.25s ease-in-out;
     }
   }
 
   .letters {
+    margin-left: 1.5vh;
     .cursor-wrapper {
       height: 12vh;
       .cursor {

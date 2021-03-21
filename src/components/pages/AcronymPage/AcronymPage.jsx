@@ -68,7 +68,7 @@ const generateWords = (words, locked) => {
       <div className={`word ${locked[index] ? 'locked' : 'unlocked'}`}>
         {word}
       </div>
-      <div className="word">&nbsp;</div>
+      {index < words.length-1 ? <div className="word">&nbsp;</div> : ""}
     </>
   ));
 };
@@ -82,6 +82,7 @@ const AcronymPage = props => {
   const mobileText = useRef(null);
 
   const [buttonActive, setButtonActive] = useState(false);
+  const [copyActive, setCopyActive] = useState(false);
 
   const focusProperTextField = () => {
     if (isMobile) {
@@ -120,6 +121,16 @@ const AcronymPage = props => {
     focusProperTextField();
     convertIdToWords(nymid);
   }, []);
+
+  const hideCopy = () => {
+    setCopyActive(false);
+  }
+
+  const wordsOnClick = () => {
+    navigator.clipboard.writeText(words.join(" "));
+    setCopyActive(true);
+    setTimeout(hideCopy, 1000);
+  }
 
   const handleKeyDown = e => {
     if (e.key) {
@@ -211,8 +222,9 @@ const AcronymPage = props => {
       >
         AcroGen!
       </button>
-      <div className="words">
-        {generateWords(words, locked, acronym, history)}
+      <div className={`copied ${copyActive ? "active" : ""}`}>Copied</div>
+      <div className="words" onClick={wordsOnClick}>
+        {generateWords(words, locked)}
       </div>
       <input
         className="mobileInput"
