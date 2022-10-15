@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { withRouter, useParams } from 'react-router-dom';
-import { compose } from 'recompose';
+import { useParams } from 'react-router-dom';
 
 import { isMobile } from 'react-device-detect';
 
@@ -10,7 +9,6 @@ import constant from '../../../util/constants';
 
 const generateLetterButtons = (acronym, words, lockedP, setLockedP) => {
   if (acronym) {
-    console.log(acronym);
     return Array.from(acronym).map((letter, index) => {
       const setLocked = isLocked => {
         setLockedP(prevLocked => {
@@ -37,22 +35,17 @@ const generateLetterButtons = (acronym, words, lockedP, setLockedP) => {
 };
 
 const updateWords = (acronym, locked, words, setWords, history) => {
-  console.log(`updating: acronym - ${acronym}`);
-  console.log(`words: ${words}`)
-  console.log(`what's locked: ${locked}`);
   if (acronym) {
     let id = '';
     const localWords = Array.from(acronym).map((letter, index) => {
       if (!locked[index]) {
         let wordArr = randomWords({ exactly: 1, letter })[0].split(',');
         id += wordArr[0];
-        console.log(`Adding word: ${wordArr[1]}`);
         return wordArr[1];
       }
       id += randomWords({word: words[index]});
       return words[index];
     });
-    console.log(`setting words: ${localWords}`);
     setWords(localWords);
     if (acronym && acronym.length > 0) {
       history.push(`/${acronym}/${id}`);
@@ -117,7 +110,6 @@ const AcronymPage = props => {
   }, [locked]);
 
   useEffect(() => {
-    console.log(nymid);
     focusProperTextField();
     convertIdToWords(nymid);
   }, []);
@@ -135,9 +127,7 @@ const AcronymPage = props => {
   const handleKeyDown = e => {
     if (e.key) {
       if (e.key === 'Backspace') {
-        console.log('backspace');
         if (acronym && acronym.length > 0) {
-          console.log('here');
           history.push(`/${acronym.substring(0, acronym.length - 1) || ''}`);
           setLocked(oldLocked => oldLocked.slice(0, oldLocked.length - 1));
         }
@@ -159,7 +149,6 @@ const AcronymPage = props => {
     if (e.key) {
       e.persist();
       if (constant.letters.indexOf(e.key) > -1) {
-        console.log(e.key);
         if (acronym) {
           history.push(`/${acronym}${e.key}`);
         } else {
@@ -175,7 +164,6 @@ const AcronymPage = props => {
       }
     }
     focusProperTextField();
-    console.log('done handling keypress');
   };
 
   const handleClick = () => {
@@ -237,4 +225,4 @@ const AcronymPage = props => {
   );
 };
 
-export default compose(withRouter)(AcronymPage);
+export default AcronymPage;
