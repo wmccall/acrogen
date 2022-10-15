@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { withRouter, useParams } from 'react-router-dom';
+import { compose } from 'recompose';
 
 import { isMobile } from 'react-device-detect';
 
@@ -224,4 +225,4 @@ const AcronymPage = (props) => {
   );
 };
 
-export default AcronymPage;
+export default compose(withRouter)(AcronymPage);
