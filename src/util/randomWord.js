@@ -2187,12 +2187,10 @@ function words(options) {
 
   if (options.ids) {
     let words = options.ids.map(id => {
-      console.log(id);
       let word = allWords[id];
       return [id, word];
     });
     return words.filter(function(el) {
-      console.log(el);
       return el[1] != null;
     });
   }
