@@ -1,38 +1,67 @@
 {
-  "extends": [
-    "airbnb",
-    "plugin:prettier/recommended",
-    "prettier",
-    "prettier/react"
-  ],
-  "parser": "babel-eslint",
-  "env": {
-    "browser": true,
-    "jest": true,
-    "es6": true,
-    "node": true
-  },
-  "rules": {
-    "import/no-extraneous-dependencies": [
-      "error",
-      {
-        "devDependencies": true
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "node": true,
+      "jest": true
+    },
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "requireConfigFile": false,
+      "ecmaVersion": 12,
+      "sourceType": "module",
+      "babelOptions": {
+        "presets": ["@babel/preset-react"]
       }
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:react/jsx-runtime",
+      "plugin:prettier/recommended",
+      "plugin:import/react"
     ],
-    "no-param-reassign": [
-      "error",
-      {
-        "props": true,
-        "ignorePropertyModificationsFor": ["draftState"]
+    "plugins": ["react", "import"],
+    "settings": {
+      "react": {
+        "version": "detect"
+      },
+      "import/resolver": {
+        "node": {
+          "extensions": [".js", ".jsx"],
+          "moduleDirectory": ["node_modules", "src"]
+        }
       }
-    ]
-  },
-  "overrides": [
-    {
-      "files": ["*.js", "*.jsx"],
-      "rules": {
-        "react/prop-types": "off"
-      }
+    },
+    "rules": {
+      "prettier/prettier": ["error", { "singleQuote": true }],
+      "linebreak-style": ["error", "unix"],
+      "quotes": ["error", "single", { "avoidEscape": true }],
+      "semi": ["error", "always"],
+      "no-trailing-spaces": "error",
+      "no-console": "error",
+      "no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "react/no-unescaped-entities": "off",
+      "react/require-default-props": "error",
+      "sort-imports": [
+        "error",
+        {
+          "ignoreCase": true,
+          "ignoreDeclarationSort": true
+        }
+      ],
+      "import/no-unresolved": ["error", { "commonjs": true, "amd": true }],
+      "import/named": "error",
+      "import/namespace": "error",
+      "import/default": "error",
+      "import/export": "error"
     }
-  ]
-}
+  }
