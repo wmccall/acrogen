@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { withRouter, useParams } from 'react-router-dom';
-import { compose } from 'recompose';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { isMobile } from 'react-device-detect';
 
@@ -35,7 +34,7 @@ const generateLetterButtons = (acronym, words, lockedP, setLockedP) => {
   }
 };
 
-const updateWords = (acronym, locked, words, setWords, history) => {
+const updateWords = (acronym, locked, words, setWords, navigate) => {
   if (acronym) {
     let id = '';
     const localWords = Array.from(acronym).map((letter, index) => {
@@ -49,7 +48,7 @@ const updateWords = (acronym, locked, words, setWords, history) => {
     });
     setWords(localWords);
     if (acronym && acronym.length > 0) {
-      history.push(`/${acronym}/${id}`);
+      navigate(`/${acronym}/${id}`);
     }
   } else {
     setWords([]);
@@ -69,8 +68,9 @@ const generateWords = (words, locked) => {
 
 const AcronymPage = (props) => {
   const { acronym, nymid } = useParams();
+  const navigate = useNavigate();
 
-  const { locked, setLocked, words, setWords, history } = props;
+  const { locked, setLocked, words, setWords } = props;
 
   const background = useRef(null);
   const mobileText = useRef(null);
@@ -92,13 +92,13 @@ const AcronymPage = (props) => {
         let idArr = id.match(/.{1,6}/g);
         let getWords = randomWords({ ids: idArr });
         if (idArr.length !== getWords.length) {
-          history.push('/');
+          navigate('/');
           return;
         }
         setWords(getWords.map((word) => word[1]));
       } else {
         if (acronym && acronym.length > 0) {
-          history.push(`/${acronym}`);
+          navigate(`/${acronym}`);
           return;
         }
       }
@@ -128,7 +128,7 @@ const AcronymPage = (props) => {
     if (e.key) {
       if (e.key === 'Backspace') {
         if (acronym && acronym.length > 0) {
-          history.push(`/${acronym.substring(0, acronym.length - 1) || ''}`);
+          navigate(`/${acronym.substring(0, acronym.length - 1) || ''}`);
           setLocked((oldLocked) => oldLocked.slice(0, oldLocked.length - 1));
         }
       } else if (e.key === ' ' || e.key === 'Enter') {
@@ -137,6 +137,7 @@ const AcronymPage = (props) => {
     }
     focusProperTextField();
   };
+
   const handleKeyUp = (e) => {
     if (e.key) {
       if (e.key === ' ' || e.key === 'Enter') {
@@ -145,14 +146,15 @@ const AcronymPage = (props) => {
     }
     focusProperTextField();
   };
+
   const handleKeypress = (e) => {
     if (e.key) {
       e.persist();
       if (constant.letters.indexOf(e.key) > -1) {
         if (acronym) {
-          history.push(`/${acronym}${e.key}`);
+          navigate(`/${acronym}${e.key}`);
         } else {
-          history.push(`/${e.key}`);
+          navigate(`/${e.key}`);
         }
         let newLocked = [];
         setLocked((oldLocked) => {
@@ -160,7 +162,7 @@ const AcronymPage = (props) => {
           return newLocked;
         });
       } else if (e.key === ' ' || e.key === 'Enter') {
-        updateWords(acronym, locked, words, setWords, history);
+        updateWords(acronym, locked, words, setWords, navigate);
       }
     }
     focusProperTextField();
@@ -173,7 +175,7 @@ const AcronymPage = (props) => {
   const handleMobileInputChange = (e) => {
     const rawInput = e.target.value.toLowerCase();
     if (rawInput.slice(rawInput.length - 1) === ' ') {
-      updateWords(acronym, locked, words, setWords, history);
+      updateWords(acronym, locked, words, setWords, navigate);
     } else {
       const fixedInput = Array.from(rawInput)
         .map((letter) => {
@@ -183,7 +185,7 @@ const AcronymPage = (props) => {
           return letter;
         })
         .join('');
-      history.push(`/${fixedInput}`);
+        navigate(`/${fixedInput}`);
     }
   };
 
@@ -206,7 +208,7 @@ const AcronymPage = (props) => {
       <button
         type="button"
         className={`generateButton ${buttonActive ? 'generate' : ''}`}
-        onClick={() => updateWords(acronym, locked, words, setWords, history)}
+        onClick={() => updateWords(acronym, locked, words, setWords, navigate)}
       >
         AcroGen!
       </button>
@@ -225,4 +227,4 @@ const AcronymPage = (props) => {
   );
 };
 
-export default compose(withRouter)(AcronymPage);
+export default AcronymPage;

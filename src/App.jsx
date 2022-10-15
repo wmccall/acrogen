@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Route, Routes } from "react-router-dom"
 
 import AcronymPage from './components/pages/AcronymPage';
 
@@ -13,21 +13,19 @@ function App() {
     setWords,
   };
   return (
-    <Router>
-      <div className="App">
-        <Route exact path="/" render={() => <AcronymPage {...props} />} />
+    <Routes>
+        <Route exact path="/" element={<AcronymPage {...props} />} />
         <Route
           exact
           path="/:acronym/"
-          render={() => <AcronymPage {...props} />}
+          element={<AcronymPage {...props} />}
         />
         <Route
           exact
           path="/:acronym/:nymid/"
-          render={() => <AcronymPage {...props} />}
+          element={<AcronymPage {...props} />}
         />
-      </div>
-    </Router>
+    </Routes>
   );
 }
 
